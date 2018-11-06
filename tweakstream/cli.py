@@ -2,10 +2,10 @@ from datetime import datetime
 
 import click
 import crayons
-from tabulate import tabulate
 import tweakers
+from tabulate import tabulate
 
-from . import __version__
+from . import __version__, config, utils
 
 
 def format_date(dt):
@@ -54,6 +54,11 @@ def cli(ctx, last):
     ctx.ensure_object(dict)
     ctx.obj['last'] = last
 
+    try:
+        utils.load_persistent_cookies()
+    except FileNotFoundError:
+        pass
+
 
 @cli.command(name="stream", help="Stream from a specific url.")
 @click.argument("url")
@@ -64,11 +69,10 @@ def stream(ctx, url):
         print_comment(comment)
 
 
-@cli.command(name="list", help="Shows a list of active topics.")
+@cli.command(name="list", help="Choose from a list of active topics.")
 @click.option("-n", default=20, help="Number of topics to show.")
 @click.pass_context
 def list_active(ctx, n):
-    """Choose from a list of active topics"""
     topics = tweakers.gathering.active_topics()[:n]
 
     topic = choose_topic(topics)
@@ -91,6 +95,17 @@ def search(ctx, query, n):
     topic = choose_topic(topics)
     for comment in topic.comment_stream(last=ctx.obj['last']):
         print_comment(comment)
+
+
+@cli.command(name="login", help="Login to tweakers.net.")
+@click.option("--username", prompt="Username")
+@click.option("--password", prompt=True, hide_input=True)
+def login(username, password):
+    tweakers.utils.login(username=username, password=password)
+    click.echo("Login succesful!")
+
+    utils.store_persistent_cookies()
+    click.echo(f"Saved session cookies to {config.stored_cookies_path}")
 
 
 if __name__ == "__main__":
