@@ -3,13 +3,9 @@ from datetime import datetime
 import click
 import crayons
 from tabulate import tabulate
-
 import tweakers
 
-
-@click.group()
-def cli():
-    pass
+from . import __version__
 
 
 def format_date(dt):
@@ -50,32 +46,41 @@ def choose_topic(topics):
     return topics[choice - 1]
 
 
-@cli.command(name="stream", help="Stream from a specific url")
+@click.group()
+@click.version_option(version=__version__)
+@click.option("--last", default=3, help="Number of previous comments to show.")
+@click.pass_context
+def cli(ctx, last):
+    ctx.ensure_object(dict)
+    ctx.obj['last'] = last
+
+
+@cli.command(name="stream", help="Stream from a specific url.")
 @click.argument("url")
-@click.option("--last", default=3, help="Number of previous comments to show")
-def stream(url, last):
+@click.pass_context
+def stream(ctx, url):
     topic = tweakers.gathering.Topic(url=url)
-    for comment in topic.comment_stream(last=last):
+    for comment in topic.comment_stream(last=ctx.obj['last']):
         print_comment(comment)
 
 
-@cli.command(name="list", help="Shows a list of active topics")
-@click.option("-n", default=20, help="Number of topics to show")
-@click.option("--last", default=3, help="Number of previous comments to show")
-def list_active(last, n):
+@cli.command(name="list", help="Shows a list of active topics.")
+@click.option("-n", default=20, help="Number of topics to show.")
+@click.pass_context
+def list_active(ctx, n):
     """Choose from a list of active topics"""
     topics = tweakers.gathering.active_topics()[:n]
 
     topic = choose_topic(topics)
-    for comment in topic.comment_stream(last=last):
+    for comment in topic.comment_stream(last=ctx.obj['last']):
         print_comment(comment)
 
 
-@cli.command(name="search", help="Search for a specific topic")
+@cli.command(name="search", help="Search for a specific topic.")
 @click.argument("query", nargs=-1)
-@click.option("-n", default=10, help="Number of results to show")
-@click.option("--last", default=3, help="Number of previous comments to show")
-def search(query, n, last):
+@click.option("-n", default=10, help="Number of results to show.")
+@click.pass_context
+def search(ctx, query, n):
     query = " ".join(query)
     topics = tweakers.gathering.search(query)
 
@@ -84,7 +89,7 @@ def search(query, n, last):
         raise SystemExit
 
     topic = choose_topic(topics)
-    for comment in topic.comment_stream(last=last):
+    for comment in topic.comment_stream(last=ctx.obj['last']):
         print_comment(comment)
 
 
