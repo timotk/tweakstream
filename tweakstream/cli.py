@@ -108,5 +108,19 @@ def login(username, password):
     click.echo(f"Saved session cookies to {config.stored_cookies_path}")
 
 
+@cli.command(name="bookmarks", help="Choose from a list of bookmarks.")
+@click.pass_context
+def bookmarks(ctx):
+    topics = tweakers.gathering.bookmarks()
+
+    if len(topics) == 0:
+        click.echo("No topics found!")
+        raise SystemExit
+
+    topic = choose_topic(topics)
+    for comment in topic.comment_stream(last=ctx.obj['last']):
+        print_comment(comment)
+
+
 if __name__ == "__main__":
     cli(obj={})
