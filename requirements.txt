@@ -2,4 +2,4 @@ appdirs
 click
 crayons
 tabulate
-tweakers>=0.2.2
+tweakers>=0.3.0
