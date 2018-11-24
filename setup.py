@@ -16,14 +16,14 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/timotk/tweakstream",
-    packages=['tweakstream'],
+    packages=["tweakstream"],
     python_requires=">=3.6",
     install_requires=requirements,
     entry_points={"console_scripts": ["tweakstream = tweakstream.cli:cli"]},
-    license='MIT',
+    license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent"
-    ]
+        "Operating System :: OS Independent",
+    ],
 )

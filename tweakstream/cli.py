@@ -52,7 +52,7 @@ def choose_topic(topics):
 @click.pass_context
 def cli(ctx, last):
     ctx.ensure_object(dict)
-    ctx.obj['last'] = last
+    ctx.obj["last"] = last
 
     try:
         utils.load_persistent_cookies()
@@ -65,7 +65,7 @@ def cli(ctx, last):
 @click.pass_context
 def stream(ctx, url):
     topic = tweakers.gathering.Topic(url=url)
-    for comment in topic.comment_stream(last=ctx.obj['last']):
+    for comment in topic.comment_stream(last=ctx.obj["last"]):
         print_comment(comment)
 
 
@@ -76,7 +76,7 @@ def list_active(ctx, n):
     topics = tweakers.gathering.active_topics()[:n]
 
     topic = choose_topic(topics)
-    for comment in topic.comment_stream(last=ctx.obj['last']):
+    for comment in topic.comment_stream(last=ctx.obj["last"]):
         print_comment(comment)
 
 
@@ -93,7 +93,7 @@ def search(ctx, query, n):
         raise SystemExit
 
     topic = choose_topic(topics)
-    for comment in topic.comment_stream(last=ctx.obj['last']):
+    for comment in topic.comment_stream(last=ctx.obj["last"]):
         print_comment(comment)
 
 
@@ -118,7 +118,7 @@ def bookmarks(ctx):
         raise SystemExit
 
     topic = choose_topic(topics)
-    for comment in topic.comment_stream(last=ctx.obj['last']):
+    for comment in topic.comment_stream(last=ctx.obj["last"]):
         print_comment(comment)
 
 
