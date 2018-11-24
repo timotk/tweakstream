@@ -102,7 +102,7 @@ def search(ctx, query, n):
 @click.option("--password", prompt=True, hide_input=True)
 def login(username, password):
     tweakers.utils.login(username=username, password=password)
-    click.echo("Login succesful!")
+    click.echo("Login successful!")
 
     utils.store_persistent_cookies()
     click.echo(f"Saved session cookies to {config.stored_cookies_path}")
