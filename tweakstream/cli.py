@@ -17,6 +17,18 @@ def format_date(dt):
         return dt.strftime("%d-%m-%Y")
 
 
+def confirm_overwrite_login():
+    if utils.cookies_exist():
+        confirmed = click.confirm(
+            "You are already logged in. Would you like to login to a different account?"
+        )
+        if confirmed:
+            config.stored_cookies_path.unlink()
+            click.echo("Existing login deleted.")
+        else:
+            raise SystemExit
+
+
 def print_comment(comment):
     """Pretty print a comment"""
     print(
@@ -98,14 +110,15 @@ def search(ctx, query, n):
 
 
 @cli.command(name="login", help="Login to tweakers.net.")
-@click.option("--username", prompt="Username")
-@click.option("--password", prompt=True, hide_input=True)
-def login(username, password):
-    tweakers.utils.login(username=username, password=password)
-    click.echo("Login successful!")
+def login():
+    confirm_overwrite_login()
 
+    username = click.prompt("Username")
+    password = click.prompt("Password", hide_input=True)
+
+    tweakers.utils.login(username=username, password=password)
     utils.store_persistent_cookies()
-    click.echo(f"Saved session cookies to {config.stored_cookies_path}")
+    click.echo("Login successful!")
 
 
 @cli.command(name="bookmarks", help="Choose from a list of bookmarks.")

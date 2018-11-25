@@ -23,3 +23,7 @@ def load_persistent_cookies():
     with open(config.stored_cookies_path, "rb") as f:
         cookies = pickle.load(f)
         session.cookies.update(cookies)
+
+
+def cookies_exist():
+    return config.stored_cookies_path.exists()
