@@ -17,7 +17,7 @@ def format_date(dt):
         return dt.strftime("%d-%m-%Y")
 
 
-def confirm_overwrite_login():
+def confirm_overwrite_existing_login():
     if utils.cookies_exist():
         confirmed = click.confirm(
             "You are already logged in. Would you like to login to a different account?"
@@ -111,7 +111,7 @@ def search(ctx, query, n):
 
 @cli.command(name="login", help="Login to tweakers.net.")
 def login():
-    confirm_overwrite_login()
+    confirm_overwrite_existing_login()
 
     username = click.prompt("Username")
     password = click.prompt("Password", hide_input=True)
